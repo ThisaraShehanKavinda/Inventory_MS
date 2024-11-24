@@ -1,0 +1,629 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
+ */
+package Interface;
+
+import inventoryms.DBConnection;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.sql.PreparedStatement;
+import java.sql.*;
+import java.sql.ResultSet;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.plaf.basic.BasicInternalFrameUI;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+
+/**
+ *
+ * @author PC
+ */
+public class AddItem extends javax.swing.JInternalFrame {
+
+    /**
+     * Creates new form AddItem
+     */
+    
+    
+   
+    String iid;
+    String iname;
+    String category;
+    String seriolNo;
+    int bPrice;
+    int sPrice;
+    int noOfItems;
+ 
+    String path2 =null; 
+    PreparedStatement pst=null;
+    
+    
+    
+    
+    
+    public AddItem() {
+        initComponents();
+        
+       tableLoard();
+        
+        autoID();
+        
+        this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0,0,0,0));
+        
+        BasicInternalFrameUI bi = (BasicInternalFrameUI)this.getUI();
+        bi.setNorthPane(null);
+    }
+    
+    
+    private void clear(){
+        txtBuyingPrice.setText("");
+        txtItemID.setText("");
+        txtItemName.setText("");
+        txtNoOfItems.setText("");
+        txtSellingPrice.setText("");
+        txtSeriolNo.setText("");
+        lblImage.setIcon(null);
+        cmbCategory.setSelectedItem(null);
+        
+    }
+    
+    
+    private void tableLoard(){
+       
+        try{
+        String sql = "SELECT item_id, item_name, category, serial_no, buy_price, sale_price, no_of_items, image, mark FROM stock";
+        Connection con = DBConnection.getConnection();
+        PreparedStatement pst = con.prepareStatement(sql);
+        ResultSet rs = pst.executeQuery();
+        DefaultTableModel tableModel = resultSetToTableModel(rs);
+        tblAddItem.setModel(tableModel);
+        
+        // Close the resources
+        rs.close();
+        pst.close();
+       
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Error occurred while loading data: " + e.getMessage());
+    }
+    }
+private DefaultTableModel resultSetToTableModel(ResultSet rs) throws SQLException {
+    ResultSetMetaData metaData = rs.getMetaData();
+
+    // Get column names
+    int columnCount = metaData.getColumnCount();
+    String[] columnNames = new String[columnCount];
+    for (int i = 1; i <= columnCount; i++) {
+        columnNames[i - 1] = metaData.getColumnName(i);
+    }
+
+    // Get row data
+    DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+    while (rs.next()) {
+        Object[] rowData = new Object[columnCount];
+        for (int i = 1; i <= columnCount; i++) {
+            rowData[i - 1] = rs.getObject(i);
+        }
+        tableModel.addRow(rowData);
+    }
+
+    return tableModel;
+}
+    
+    
+    private void getData(){
+        iid = txtItemID.getText();
+        iname = txtItemName.getText();
+        category = cmbCategory.getSelectedItem().toString();
+        seriolNo = txtSeriolNo.getText();
+        bPrice = Integer.parseInt(txtBuyingPrice.getText());
+        sPrice = Integer.parseInt(txtSellingPrice.getText());
+        noOfItems = Integer.parseInt(txtNoOfItems.getText());
+    }
+    
+   private void autoID() {
+    try {
+        String sql = "SELECT item_id FROM stock ORDER BY item_id DESC LIMIT 1";
+        Connection con = DBConnection.getConnection();
+        pst = con.prepareStatement(sql);
+        ResultSet rs = pst.executeQuery();
+        
+        if (rs.next()) {
+            String rnno = rs.getString("item_id");
+            int oo = rnno.length();
+            String txt = rnno.substring(0, 3);
+            String num = rnno.substring(3, oo);
+            int n = Integer.parseInt(num);
+            n++;
+            String snum = Integer.toString(n);
+            String ftxt = txt + snum;
+            txtItemID.setText(ftxt);
+        } else {
+            txtItemID.setText("IID1000");
+        }
+        
+        rs.close();
+        pst.close();
+        
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(rootPane, ex.getMessage());
+    }
+}
+
+    
+    
+    
+    
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        panel1 = new keeptoo.KGradientPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        txtNoOfItems = new app.bolivia.swing.JCTextField();
+        txtItemID = new app.bolivia.swing.JCTextField();
+        txtItemName = new app.bolivia.swing.JCTextField();
+        txtSeriolNo = new app.bolivia.swing.JCTextField();
+        txtBuyingPrice = new app.bolivia.swing.JCTextField();
+        txtSellingPrice = new app.bolivia.swing.JCTextField();
+        cmbCategory = new javax.swing.JComboBox<>();
+        jPanel4 = new javax.swing.JPanel();
+        lblImage = new javax.swing.JLabel();
+        rSButtonMetro1 = new rojerusan.RSButtonMetro();
+        rSButtonMetro2 = new rojerusan.RSButtonMetro();
+        rSButtonMetro3 = new rojerusan.RSButtonMetro();
+        rSButtonMetro4 = new rojerusan.RSButtonMetro();
+        rSButtonMetro5 = new rojerusan.RSButtonMetro();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tblAddItem = new javax.swing.JTable();
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
+        setBorder(null);
+        setPreferredSize(new java.awt.Dimension(640, 520));
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel1.setBackground(new java.awt.Color(0, 0, 51));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+
+        panel1.setkEndColor(new java.awt.Color(153, 153, 153));
+        panel1.setkStartColor(new java.awt.Color(255, 255, 255));
+
+        javax.swing.GroupLayout panel1Layout = new javax.swing.GroupLayout(panel1);
+        panel1.setLayout(panel1Layout);
+        panel1Layout.setHorizontalGroup(
+            panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 620, Short.MAX_VALUE)
+        );
+        panel1Layout.setVerticalGroup(
+            panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 40, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 620, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(panel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 40, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(panel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
+
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 620, 40));
+
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel1.setText("Selling Price");
+        jPanel3.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 220, -1, -1));
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel2.setText("No Of Items");
+        jPanel3.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 260, -1, -1));
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel3.setText("Item ID");
+        jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, -1, -1));
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel4.setText("Item Name");
+        jPanel3.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 60, -1, -1));
+
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel5.setText("Category");
+        jPanel3.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 100, -1, -1));
+
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel6.setText("Serial NO");
+        jPanel3.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 140, -1, -1));
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel7.setText("Buying Price");
+        jPanel3.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 180, -1, -1));
+
+        txtNoOfItems.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        txtNoOfItems.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNoOfItemsActionPerformed(evt);
+            }
+        });
+        jPanel3.add(txtNoOfItems, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 260, 170, 30));
+
+        txtItemID.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        txtItemID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtItemIDActionPerformed(evt);
+            }
+        });
+        jPanel3.add(txtItemID, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 20, 170, 30));
+
+        txtItemName.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        txtItemName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtItemNameActionPerformed(evt);
+            }
+        });
+        jPanel3.add(txtItemName, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 60, 170, 30));
+
+        txtSeriolNo.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        txtSeriolNo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSeriolNoActionPerformed(evt);
+            }
+        });
+        jPanel3.add(txtSeriolNo, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 140, 170, 30));
+
+        txtBuyingPrice.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        txtBuyingPrice.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtBuyingPriceActionPerformed(evt);
+            }
+        });
+        jPanel3.add(txtBuyingPrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 180, 170, 30));
+
+        txtSellingPrice.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        txtSellingPrice.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSellingPriceActionPerformed(evt);
+            }
+        });
+        jPanel3.add(txtSellingPrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 220, 170, 30));
+
+        cmbCategory.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        cmbCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Computers", "Mobile Phones", "Others" }));
+        jPanel3.add(cmbCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 102, 170, 30));
+
+        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 300, 300));
+
+        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        lblImage.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel4.add(lblImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 170, 200));
+
+        rSButtonMetro1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/icons8-search-more-20.png"))); // NOI18N
+        rSButtonMetro1.setText("Browse");
+        rSButtonMetro1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        rSButtonMetro1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rSButtonMetro1ActionPerformed(evt);
+            }
+        });
+        jPanel4.add(rSButtonMetro1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 230, 170, 30));
+
+        rSButtonMetro2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/icons8-add-20.png"))); // NOI18N
+        rSButtonMetro2.setText("Add");
+        rSButtonMetro2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        rSButtonMetro2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rSButtonMetro2ActionPerformed(evt);
+            }
+        });
+        jPanel4.add(rSButtonMetro2, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 20, 110, 30));
+
+        rSButtonMetro3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/icons8-update-20.png"))); // NOI18N
+        rSButtonMetro3.setText("Update");
+        rSButtonMetro3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        rSButtonMetro3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rSButtonMetro3ActionPerformed(evt);
+            }
+        });
+        jPanel4.add(rSButtonMetro3, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 60, 110, 30));
+
+        rSButtonMetro4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/icons8-delete-20.png"))); // NOI18N
+        rSButtonMetro4.setText("Delete");
+        rSButtonMetro4.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        rSButtonMetro4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rSButtonMetro4ActionPerformed(evt);
+            }
+        });
+        jPanel4.add(rSButtonMetro4, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 100, 110, 30));
+
+        rSButtonMetro5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/icons8-clear-20.png"))); // NOI18N
+        rSButtonMetro5.setText("Clear");
+        rSButtonMetro5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        rSButtonMetro5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rSButtonMetro5ActionPerformed(evt);
+            }
+        });
+        jPanel4.add(rSButtonMetro5, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 140, 110, 30));
+
+        jPanel1.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 60, 310, 300));
+
+        tblAddItem.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        tblAddItem.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblAddItemMouseClicked(evt);
+            }
+        });
+        jScrollPane3.setViewportView(tblAddItem);
+
+        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 370, 620, 130));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 640, 520));
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void txtNoOfItemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNoOfItemsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNoOfItemsActionPerformed
+
+    private void txtItemIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtItemIDActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtItemIDActionPerformed
+
+    private void txtItemNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtItemNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtItemNameActionPerformed
+
+    private void txtSeriolNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSeriolNoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSeriolNoActionPerformed
+
+    private void txtBuyingPriceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuyingPriceActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtBuyingPriceActionPerformed
+
+    private void txtSellingPriceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSellingPriceActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSellingPriceActionPerformed
+
+    private void rSButtonMetro2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSButtonMetro2ActionPerformed
+        
+        getData();
+        try {
+            String sql = "INSERT INTO stock (item_id, item_name, category, serial_no, buy_price, sale_price, no_of_items, image, mark) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+Connection con ;
+PreparedStatement pst = null;
+
+try {
+    con = DBConnection.getConnection();
+    pst = con.prepareStatement(sql);
+    pst.setString(1, iid);
+    pst.setString(2, iname);
+    pst.setString(3, category);
+    pst.setString(4, seriolNo);
+    pst.setInt(5, bPrice);
+    pst.setInt(6, sPrice);
+    pst.setInt(7, noOfItems);
+
+    InputStream is = new FileInputStream(new File(path2));
+    pst.setBlob(8, is);
+
+    pst.setString(9, "1");
+    pst.executeUpdate();
+
+    JOptionPane.showMessageDialog(this, "Successfully Added!");
+    tableLoard();
+} catch (SQLException | FileNotFoundException ex) {
+    JOptionPane.showMessageDialog(this, ex.getMessage());
+}
+
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }//GEN-LAST:event_rSButtonMetro2ActionPerformed
+
+    private void rSButtonMetro1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSButtonMetro1ActionPerformed
+        JFileChooser chooser =  new JFileChooser();
+        chooser.showOpenDialog(null);
+        File f = chooser.getSelectedFile();
+        String path = f.getAbsolutePath();
+
+        try {
+            BufferedImage bi = ImageIO.read(new File(path));
+            Image img = bi.getScaledInstance(189, 140, Image.SCALE_SMOOTH);
+            ImageIcon icon = new ImageIcon(img);
+            lblImage.setIcon(icon);
+            path2 = path;
+            tableLoard();
+        } catch (Exception ex) {
+            Logger.getLogger(AddItem.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_rSButtonMetro1ActionPerformed
+
+    private void rSButtonMetro3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSButtonMetro3ActionPerformed
+        
+        try {
+              getData();
+        String sql = "update stock set item_name=?,category=?,serial_no=?,buy_price=?,sale_price=?,no_of_items=?,image=? where item_id='"+iid+"'";
+        Connection con = DBConnection.getConnection();
+        PreparedStatement pst = con.prepareStatement(sql);
+        
+        pst.setString(1, iname);
+        pst.setString(2, category);
+        pst.setString(3, seriolNo);
+        pst.setInt(4, bPrice);
+        pst.setInt(5, sPrice);
+        pst.setInt(6, noOfItems);
+
+        InputStream is = new FileInputStream(new File(path2));
+        pst.setBlob(7, is);
+
+
+        pst.execute();
+        
+        JOptionPane.showMessageDialog(this, "Successfully Updated!");
+        tableLoard();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }//GEN-LAST:event_rSButtonMetro3ActionPerformed
+
+    private void rSButtonMetro5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSButtonMetro5ActionPerformed
+       clear();
+       autoID();
+    }//GEN-LAST:event_rSButtonMetro5ActionPerformed
+
+    private void rSButtonMetro4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSButtonMetro4ActionPerformed
+        try {
+            
+            String sql = "delete from stock where item_id='"+txtItemID.getText()+"'";
+            Connection con = DBConnection.getConnection();
+                    
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.execute();
+            JOptionPane.showMessageDialog(this, "Successfully deleted!");
+            tableLoard();
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }//GEN-LAST:event_rSButtonMetro4ActionPerformed
+
+    private void tblAddItemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblAddItemMouseClicked
+        int rowNo = tblAddItem.getSelectedRow();
+            TableModel model = tblAddItem.getModel();
+            
+            txtItemID.setText(model.getValueAt(rowNo, 0).toString());
+            txtItemName.setText(model.getValueAt(rowNo, 1).toString());
+            cmbCategory.setSelectedItem(model.getValueAt(rowNo, 2).toString());
+            txtSeriolNo.setText(model.getValueAt(rowNo, 3).toString());
+            txtBuyingPrice.setText(model.getValueAt(rowNo, 4).toString());
+             txtSellingPrice.setText(model.getValueAt(rowNo, 5).toString());
+              txtNoOfItems.setText(model.getValueAt(rowNo, 6).toString());
+            
+            try{
+                
+                Connection con = DBConnection.getConnection();
+                PreparedStatement pst = con.prepareStatement("select image from stock where item_id = ?");
+                pst.setString(1,model.getValueAt(rowNo, 0).toString() );
+                ResultSet rs = pst.executeQuery();
+                if(rs.next()){
+                    byte[] imageData = rs.getBytes("image");
+                    Image image = ImageIO.read(new ByteArrayInputStream(imageData));
+                    Image scaledImage = image.getScaledInstance(lblImage.getWidth(), lblImage.getHeight(), Image.SCALE_SMOOTH);
+                    lblImage.setIcon(new ImageIcon(scaledImage));
+                    
+                }
+                
+               
+                
+            }catch(Exception ex){
+                ex.printStackTrace();
+            }
+    }//GEN-LAST:event_tblAddItemMouseClicked
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> cmbCategory;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JLabel lblImage;
+    private keeptoo.KGradientPanel panel1;
+    private rojerusan.RSButtonMetro rSButtonMetro1;
+    private rojerusan.RSButtonMetro rSButtonMetro2;
+    private rojerusan.RSButtonMetro rSButtonMetro3;
+    private rojerusan.RSButtonMetro rSButtonMetro4;
+    private rojerusan.RSButtonMetro rSButtonMetro5;
+    private javax.swing.JTable tblAddItem;
+    private app.bolivia.swing.JCTextField txtBuyingPrice;
+    private app.bolivia.swing.JCTextField txtItemID;
+    private app.bolivia.swing.JCTextField txtItemName;
+    private app.bolivia.swing.JCTextField txtNoOfItems;
+    private app.bolivia.swing.JCTextField txtSellingPrice;
+    private app.bolivia.swing.JCTextField txtSeriolNo;
+    // End of variables declaration//GEN-END:variables
+}
